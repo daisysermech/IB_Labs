@@ -56,17 +56,38 @@ def GenerateCodes(Node, value=''):
     return the_codes
 
 
-def Encode(text,the_codes):
-    encoded_text=''
+def Encode(text, the_codes):
+    encoded_text = ''
     for c in text:
-        encoded_text+=the_codes[c]
+        encoded_text += the_codes[c]
     return encoded_text
 
 
-text=input()
+def Decode(encoded_data, node):
+    tree_head = node
+    decoded_output = []
+    for x in encoded_data:
+        if x == '1':
+            node = node.left
+        elif x == '0':
+            node = node.right
+        try:
+            if node.left.symbol == None and node.right.symbol == None:
+                pass
+        except AttributeError:
+            decoded_output.append(node.symbol)
+            node = tree_head
+
+    string = ''.join([str(item) for item in decoded_output])
+    return string
+
+
+text = input()
 probs = InputProcessing(text)
 nodes = CreatePrimaryNodes(probs)
 n = CreateNodes(nodes)
-codes=GenerateCodes(n)
-print("Codes: "+str(codes))
-print("Encoded text: "+Encode(text,codes))
+codes = GenerateCodes(n)
+enc_text = Encode(text, codes)
+print("Codes: " + str(codes))
+print("Encoded text: " + enc_text)
+print("Decoded text: " + Decode(enc_text, n))
