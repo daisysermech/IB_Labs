@@ -1,0 +1,72 @@
+class Node:
+    def __init__(self, probability, symbol, left=None, right=None):
+        self.probability = probability
+        self.symbol = symbol
+        self.left = left
+        self.right = right
+        self.code = ''
+
+
+def InputProcessing(input_string):
+    probabilities = {}
+    for c in input_string:
+        if probabilities.get(c) is None:
+            probabilities[c] = 1
+        else:
+            probabilities[c] += 1
+    return dict(sorted(probabilities.items(), key=lambda i: (-i[1], i[0]), reverse=True))
+
+
+def CreatePrimaryNodes(probabilities):
+    Nodes = list()
+    for key, val in probabilities.items():
+        Nodes.append(Node(val, key))
+    return Nodes
+
+
+def CreateNodes(Nodes):
+    NewNodes = Nodes
+    while len(NewNodes) > 1:
+        l = NewNodes[0]
+        l.code = '1'
+        r = NewNodes[1]
+        r.code = '0'
+        newNode = Node(NewNodes[0].probability + NewNodes[1].probability,
+                       NewNodes[0].symbol + NewNodes[1].symbol,
+                       left=l, right=r)
+        NewNodes.remove(l)
+        NewNodes.remove(r)
+        NewNodes.insert(0, newNode)
+    return NewNodes[0]
+
+
+the_codes = dict()
+
+
+def GenerateCodes(Node, value=''):
+    newValue = value + str(Node.code)
+    if Node.left:
+        GenerateCodes(Node.left, newValue)
+    if Node.right:
+        GenerateCodes(Node.right, newValue)
+
+    if not Node.left and not Node.right:
+        the_codes[Node.symbol] = newValue
+
+    return the_codes
+
+
+def Encode(text,the_codes):
+    encoded_text=''
+    for c in text:
+        encoded_text+=the_codes[c]
+    return encoded_text
+
+
+text=input()
+probs = InputProcessing(text)
+nodes = CreatePrimaryNodes(probs)
+n = CreateNodes(nodes)
+codes=GenerateCodes(n)
+print("Codes: "+str(codes))
+print("Encoded text: "+Encode(text,codes))
