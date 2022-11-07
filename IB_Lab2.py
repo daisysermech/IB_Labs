@@ -1,6 +1,6 @@
 import random
 
-k = int(input('Enter k - the number of redundant bits.'))
+k = int(input('Enter k - the number of checking bits.'))
 chars = []
 while True:
     s = input('Enter ' + str(2 ** k - k - 1) + ' bits to transfer.')
