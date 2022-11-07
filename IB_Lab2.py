@@ -17,32 +17,40 @@ for i in range(k):
 
 
 def Calculate(arr):
-    for i in range(k):
+    for i in powers:
         summ = 0
-        for j in range(2 ** k - 1):
-            if j not in powers and j != (2 ** k - 1 - 2) - (2 ** i - 1):
-                summ += arr[j]
-        arr[2 ** i - 1] = int(summ % 2 == 1)
+        c = i + 1
+        j = i
+        while j < 2 ** k - 1:
+            if c > 0:
+                if j != i:
+                    summ += arr[j]
+                c -= 1
+                j += 1
+            else:
+                c = i + 1
+                j += i + 1
+        arr[i] = int(summ % 2 == 1)
     return arr
 
 
 chars = Calculate(chars)
 
-print("Initial: \n" + str(chars))
+print("Initial: \n" + "".join(map(str, chars)))
 
 broken = random.randint(0, 2 ** k - 2)
 chars[broken] = int(chars[broken] == 0)
 
-print("Broken: \n" + str(chars))
+print("Broken: \n" + "".join(map(str, chars)))
 copy_chars = list(chars)
-copy_chars=Calculate(copy_chars)
+copy_chars = Calculate(copy_chars)
 
-print("Recalculated: \n" + str(copy_chars))
+print("Recalculated: \n" + "".join(map(str, copy_chars)))
 wrong = []
 for i in powers:
     if copy_chars[i] != chars[i]:
         wrong.append(i)
-index = sum(wrong)+len(wrong)-1
+index = sum(wrong) + len(wrong) - 1
 chars[index] = int(chars[index] == 0)
-print('Fixed:\n' + str(chars))
+print('Fixed:\n' + "".join(map(str, chars)))
 print('Error was in position ' + str(index + 1))
